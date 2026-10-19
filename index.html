@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <title>人生選擇扭蛋機｜LIFE GACHA</title>
+    <style>
+    :root {
+      --bg: #14142d;
+      --panel: #242447;
+      --edge: #7474a8;
+      --cream: #fff3ce;
+      --pink: #fa78af;
+      --cyan: #67e7e1;
+      --yellow: #ffe17c;
+      --shadow: #090917
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 50% 0, #39366b, #14142d 65%);
+      color: var(--cream);
+      font-family: ui-monospace, Consolas, 'Courier New', monospace;
+      min-height: 100vh
+    }
+
+    .wrap {
+      width: min(1100px, 94%);
+      margin: auto;
+      padding: 28px 0 40px
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0
+    }
+
+    h1 {
+      font-size: clamp(25px, 4.5vw, 48px);
+      letter-spacing: 2px;
+      text-shadow: 4px 4px #6d3976
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px
+    }
+
+    header p {
+      margin-top: 9px;
+      color: #bac4ed
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: #24203f;
+      padding: 6px 11px;
+      font-weight: bold;
+      box-shadow: 4px 4px #0009;
+      transform: rotate(-2deg);
+      margin-bottom: 15px
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 20px
+    }
+
+    .panel {
+      border: 4px solid var(--edge);
+      background: var(--panel);
+      box-shadow: 8px 8px 0 var(--shadow);
+      padding: 20px
+    }
+
+    .panel h2 {
+      font-size: 17px;
+      margin-bottom: 15px;
+      color: var(--cyan)
+    }
+
+    .topics {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 15px
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      color: var(--cream);
+      border: 3px solid #aaa8d4;
+      background: #44436b;
+      padding: 11px 12px;
+      box-shadow: 3px 3px #101026;
+      transition: transform .1s
+    }
+
+    button:hover:not(:disabled) {
+      filter: brightness(1.16);
+      transform: translateY(-2px)
+    }
+
+    button:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px #101026
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .topics button {
+      font-size: 12px;
+      flex: 1 1 105px
+    }
+
+    .topics button.active {
+      background: var(--pink);
+      border-color: #ffc0df;
+      color: #231630
+    }
+
+    .machine {
+      position: relative;
+      width: min(310px, 100%);
+      margin: 10px auto 22px;
+      filter: drop-shadow(8px 9px 0 #0a0b20)
+    }
+
+    .machine-top {
+      background: #f97aad;
+      border: 7px solid #ffb9d5;
+      border-bottom: 8px solid #9c3c81;
+      border-radius: 95px 95px 20px 20px;
+      padding: 15px 18px 12px
+    }
+
+    .machine-label {
+      text-align: center;
+      color: #54234d;
+      background: var(--yellow);
+      font-size: 13px;
+      font-weight: bold;
+      padding: 7px;
+      margin-bottom: 10px;
+      border: 3px solid white
+    }
+
+    .glass {
+      height: 226px;
+      background: linear-gradient(130deg, #b4f9ffdd, #5965ac80);
+      border: 7px solid #fff3d4;
+      border-radius: 75px 75px 15px 15px;
+      box-shadow: inset 10px 0 #fff5;
+      position: relative;
+      overflow: hidden
+    }
+
+    .capsule {
+      position: absolute;
+      width: 69px;
+      height: 69px;
+      border: 4px solid #fff9;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #fff9 0 47%, var(--c) 48%);
+      box-shadow: inset -8px -5px #0002, 3px 5px #0003;
+      transform: rotate(var(--r))
+    }
+
+    .capsule::after {
+      content: '✦';
+      position: absolute;
+      left: 24px;
+      top: 9px;
+      color: white;
+      font-size: 20px
+    }
+
+    .c1 {
+      left: 8%;
+      bottom: 8%;
+      --c: #ff79a8;
+      --r: -18deg
+    }
+
+    .c2 {
+      left: 29%;
+      bottom: 13%;
+      --c: #ffd46c;
+      --r: 19deg
+    }
+
+    .c3 {
+      left: 54%;
+      bottom: 7%;
+      --c: #8e85ff;
+      --r: -24deg
+    }
+
+    .c4 {
+      left: 14%;
+      bottom: 43%;
+      --c: #60ddcb;
+      --r: 15deg
+    }
+
+    .c5 {
+      left: 51%;
+      bottom: 44%;
+      --c: #ff92dc;
+      --r: -9deg
+    }
+
+    .machine-bottom {
+      background: #fa78af;
+      border: 8px solid #ffb9d5;
+      border-top: none;
+      padding: 22px 16px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .knob {
+      width: 78px;
+      height: 78px;
+      background: #fff0c7;
+      border: 8px solid #cc538e;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: inset -7px -6px #dcb482
+    }
+
+    .knob::after {
+      content: '';
+      height: 51px;
+      width: 13px;
+      background: #75405c;
+      position: absolute;
+      top: 5px;
+      left: 25px;
+      border-radius: 3px
+    }
+
+    .outlet {
+      height: 72px;
+      width: 93px;
+      background: #2b234c;
+      border: 8px solid #d35492;
+      border-radius: 12px;
+      box-shadow: inset 0 11px #100e2a
+    }
+
+    .machine.shaking {
+      animation: shake .12s infinite
+    }
+
+    .machine.shaking .knob {
+      animation: spin .65s linear infinite
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(-3px) rotate(-1deg)
+      }
+
+      50% {
+        transform: translateX(3px) rotate(1deg)
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .go {
+      display: block;
+      width: min(310px, 100%);
+      margin: auto;
+      background: var(--yellow);
+      color: #302345;
+      border-color: #fff2ad;
+      padding: 15px;
+      font-size: 19px;
+      font-weight: 900
+    }
+
+    .hint {
+      text-align: center;
+      color: #b4bde1;
+      font-size: 12px;
+      margin-top: 13px;
+      min-height: 18px
+    }
+
+    .status {
+      min-height: 100px;
+      border: 3px dashed #7376a8;
+      padding: 15px;
+      text-align: center;
+      margin: 18px 0;
+      background: #1b1c3a;
+      display: grid;
+      place-items: center
+    }
+
+    .status strong {
+      display: block;
+      color: var(--yellow);
+      font-size: 21px;
+      margin: 8px 0;
+      overflow-wrap: anywhere
+    }
+
+    .rarity {
+      font-size: 12px;
+      display: inline-block;
+      padding: 4px 10px;
+      background: #696a9a
+    }
+
+    .rarity.common {
+      background: #656981
+    }
+
+    .rarity.rare {
+      background: #287fa3
+    }
+
+    .rarity.epic {
+      background: #8d4aae
+    }
+
+    .rarity.legend {
+      background: #b77e21
+    }
+
+    .message {
+      font-size: 13px;
+      color: #cdd5f0;
+      margin-top: 6px
+    }
+
+    .editor {
+      margin-bottom: 16px
+    }
+
+    .editor label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px
+    }
+
+    .addline {
+      display: flex;
+      gap: 8px
+    }
+
+    .addline input {
+      min-width: 0;
+      flex: 1;
+      background: #171733;
+      color: white;
+      border: 3px solid #6d6e9e;
+      padding: 11px;
+      font: inherit
+    }
+
+    .addline input:focus {
+      outline: 2px solid var(--cyan)
+    }
+
+    .addline button {
+      background: #4b9e9d
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 11px
+    }
+
+    .chip {
+      font-size: 12px;
+      background: #393962;
+      border: 2px solid #7778a5;
+      padding: 6px 8px;
+      max-width: 100%;
+      overflow-wrap: anywhere
+    }
+
+    .chip button {
+      padding: 1px 5px;
+      background: #b84b7c;
+      border: 0;
+      box-shadow: none;
+      margin-left: 6px
+    }
+
+    .notice {
+      color: #ffc1cf;
+      font-size: 12px;
+      min-height: 20px;
+      margin-top: 7px
+    }
+
+    .history {
+      display: grid;
+      gap: 8px;
+      max-height: 275px;
+      overflow: auto
+    }
+
+    .history-entry {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 2px dashed #62638c;
+      padding: 9px 2px;
+      font-size: 12px
+    }
+
+    .history-entry b {
+      color: var(--yellow)
+    }
+
+    .history-entry small {
+      color: #b8b9dd;
+      white-space: nowrap
+    }
+
+    .action {
+      margin-top: 13px;
+      font-size: 12px
+    }
+
+    .footer {
+      text-align: center;
+      color: #8e99c5;
+      font-size: 11px;
+      margin-top: 30px;
+      line-height: 1.7
+    }
+
+    @media(max-width:780px) {
+      .layout {
+        grid-template-columns: 1fr
+      }
+
+      .panel {
+        padding: 15px
+      }
+
+      .wrap {
+        padding-top: 16px
+      }
+
+      .machine {
+        max-width: 275px
+      }
+
+      .glass {
+        height: 195px
+      }
+
+      .capsule {
+        width: 62px;
+        height: 62px
+      }
+
+      .machine-bottom {
+        height: 117px
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition: none !important
+      }
+    }
+</style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <span class="tag">★ INSERT COIN? NOPE! ★</span>
+        <h1>人生選擇扭蛋機</h1>
+        <p>✦ LIFE GACHA ✦ 把選擇交給命運，讓今天多一點驚喜！</p>
+      </header>
+      <main class="layout">
+        <section class="panel">
+          <h2>01 / SELECT YOUR DESTINY</h2>
+          <div class="topics" id="topics">
+            <button class="active" data-topic="food">🍜 吃什麼</button>
+            <button data-topic="activity">🎮 做什麼</button>
+            <button data-topic="challenge">⚡ 命運挑戰</button>
+            <button data-topic="custom">✏️ 自訂扭蛋</button>
+          </div>
+          <div aria-hidden="true" class="machine" id="machine">
+            <div class="machine-top">
+              <div class="machine-label">
+                LUCKY ★ GACHA
+              </div>
+              <div class="glass">
+                <div class="capsule c1"></div>
+                <div class="capsule c2"></div>
+                <div class="capsule c3"></div>
+                <div class="capsule c4"></div>
+                <div class="capsule c5"></div>
+              </div>
+            </div>
+            <div class="machine-bottom">
+              <div class="knob"></div>
+              <div class="outlet"></div>
+            </div>
+          </div>
+          <button class="go" id="draw">▶ 轉動命運扭蛋！</button>
+          <p aria-live="polite" class="hint" id="hint">選好主題，按下按鈕開始抽選</p>
+          <div aria-live="polite" class="status" id="result">
+            等待你的第一次抽選 ✨
+          </div>
+        </section>
+        <aside>
+          <section class="panel editor">
+            <h2>02 / YOUR OPTIONS</h2>
+            <div id="editor">
+              <label for="newOption">自訂你的扭蛋內容（最少 2 項，最多 30 項）</label>
+              <div class="addline">
+                <input id="newOption" maxlength="35" placeholder="例如：去健身房"/>
+                <button id="add">＋新增</button>
+              </div>
+            </div>
+            <div class="chips" id="chips"></div>
+            <p class="notice" id="notice" role="status"></p>
+          </section>
+          <section class="panel">
+            <h2>03 / GACHA HISTORY</h2>
+            <div class="history" id="history">
+              <p class="message">還沒有抽選紀錄</p>
+            </div>
+            <button class="action" id="clear">清除歷史紀錄</button>
+          </section>
+        </aside>
+      </main>
+      <div class="footer">
+        均勻隨機抽選・稀有度獨立產生・資料僅保存在目前瀏覽器
+        <br/>
+        RETRO ARCADE EDITION © LIFE GACHA
+      </div>
+    </div>
+    <script>
+    (() => {
+      'use strict';
+      const DEFAULTS = {
+        food: ['拉麵', '火鍋', '壽司', '漢堡', '便當', '義大利麵', '水餃', '咖哩飯', '滷肉飯', '披薩'],
+        activity: ['看電影', '去散步', '讀一本書', '逛街', '健身運動', '玩桌遊', '整理房間', '找朋友聊天', '去咖啡廳', '在家休息'],
+        challenge: ['稱讚一個人', '喝一杯水', '放下手機 30 分鐘', '嘗試新食物', '整理桌面 10 分鐘', '寫下三件感謝的事', '走路 20 分鐘', '給朋友一個問候', '學一個新單字', '聽一首沒聽過的歌']
+      };
+      const TITLES = {
+        food: '今天吃什麼',
+        activity: '今天做什麼',
+        challenge: '今日命運挑戰',
+        custom: '自訂命運'
+      };
+      const MESSAGES = ['宇宙已替你做出選擇！', '不要再猶豫了，出發吧！', '你的命運訊號已接收。', '今天的冒險從這裡開始！', '再小的選擇也能有驚喜。'];
+      const $ = id => document.getElementById(id),
+        KEY = 'life-gacha-v1';
+      let data = {
+        custom: ['去健身房', '讀書', '打遊戲'],
+        history: []
+      };
+      try {
+        const v = JSON.parse(localStorage.getItem(KEY));
+        if (v && typeof v === 'object') {
+          if (Array.isArray(v.custom)) data.custom = v.custom.filter(s => typeof s === 'string' && s.trim()).slice(0, 30);
+          if (Array.isArray(v.history)) data.history = v.history.filter(x => x && typeof x.value === 'string' && TITLES[x.topic]).slice(0, 20)
+        }
+      } catch (e) {};
+      let topic = 'food',
+        busy = false;
+      const save = () => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(data))
+        } catch (e) {
+          $('notice').textContent = '無法儲存：可能是瀏覽器限制了本機儲存。'
+        }
+      };
+
+      function options() {
+        return topic === 'custom' ? data.custom : DEFAULTS[topic]
+      }
+
+      function randomInt(n) {
+        if (window.crypto && crypto.getRandomValues) {
+          const a = new Uint32Array(1),
+            range = 4294967296,
+            limit = Math.floor(range / n) * n;
+          do {
+            crypto.getRandomValues(a)
+          } while (a[0] >= limit);
+          return a[0] % n
+        }
+        return Math.floor(Math.random() * n)
+      }
+
+      function renderOptions() {
+        $('editor').hidden = topic !== 'custom';
+        $('chips').innerHTML = '';
+        options().forEach((val, i) => {
+          const chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.append(document.createTextNode(val));
+          if (topic === 'custom') {
+            const b = document.createElement('button');
+            b.textContent = '×';
+            b.setAttribute('aria-label', '刪除 ' + val);
+            b.disabled = busy;
+            b.addEventListener('click', () => {
+              data.custom.splice(i, 1);
+              save();
+              renderOptions()
+            });
+            chip.append(b)
+          }
+          $('chips').append(chip)
+        });
+        $('draw').disabled = busy || options().length < 2;
+        $('notice').textContent = options().length < 2 ? '至少需要 2 個選項才能抽選。' : ''
+      }
+
+      function renderHistory() {
+        $('history').innerHTML = '';
+        if (!data.history.length) {
+          const p = document.createElement('p');
+          p.className = 'message';
+          p.textContent = '還沒有抽選紀錄';
+          $('history').append(p)
+        }
+        data.history.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'history-entry';
+          const left = document.createElement('span');
+          const b = document.createElement('b');
+          b.textContent = item.value;
+          left.append(b, document.createTextNode(' · ' + TITLES[item.topic]));
+          const small = document.createElement('small');
+          small.textContent = item.time || '';
+          row.append(left, small);
+          $('history').append(row)
+        })
+      }
+
+      function rarity() {
+        const n = randomInt(100);
+        return n < 1 ? ['傳說', 'legend'] : n < 10 ? ['史詩', 'epic'] : n < 35 ? ['稀有', 'rare'] : ['普通', 'common']
+      }
+
+      function showResult(value, r) {
+        $('result').replaceChildren();
+        const wrap = document.createElement('div');
+        const badge = document.createElement('span');
+        badge.className = 'rarity ' + r[1];
+        badge.textContent = '✦ ' + r[0] + ' 扭蛋 ✦';
+        const strong = document.createElement('strong');
+        strong.textContent = value;
+        const p = document.createElement('p');
+        p.className = 'message';
+        p.textContent = MESSAGES[randomInt(MESSAGES.length)];
+        wrap.append(badge, strong, p);
+        $('result').append(wrap)
+      }
+
+      function draw() {
+        if (busy || options().length < 2) return;
+        const drawnTopic = topic;
+        const arr = options().slice();
+        const result = arr[randomInt(arr.length)];
+        const level = rarity();
+        busy = true;
+        $('draw').disabled = true;
+        $('hint').textContent = '命運正在轉動中……';
+        $('result').textContent = '✦ ✦ ✦';
+        $('machine').classList.add('shaking');
+        renderOptions();
+        setTimeout(() => {
+          showResult(result, level);
+          $('machine').classList.remove('shaking');
+          data.history.unshift({
+            topic: drawnTopic,
+            value: result,
+            time: new Date().toLocaleString('zh-TW', {
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          });
+          data.history = data.history.slice(0, 20);
+          save();
+          renderHistory();
+          busy = false;
+          $('hint').textContent = '想試試另一個命運嗎？再抽一次！';
+          renderOptions();
+          $('topics').querySelectorAll('button').forEach(b => b.disabled = false);
+          $('clear').disabled = false
+        }, 1450)
+      }
+      $('topics').querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
+        if (busy) return;
+        topic = button.dataset.topic;
+        $('topics').querySelectorAll('button').forEach(b => b.classList.toggle('active', b === button));
+        $('result').textContent = '已選擇「' + TITLES[topic] + '」— 準備抽選！';
+        renderOptions()
+      }));
+      $('add').addEventListener('click', () => {
+        if (busy || topic !== 'custom') return;
+        const inp = $('newOption'),
+          v = inp.value.trim();
+        if (!v) {
+          $('notice').textContent = '請先輸入選項內容。';
+          return
+        }
+        if (v.length > 35) {
+          $('notice').textContent = '選項請勿超過 35 字。';
+          return
+        }
+        if (data.custom.length >= 30) {
+          $('notice').textContent = '最多只能新增 30 項。';
+          return
+        }
+        if (data.custom.includes(v)) {
+          $('notice').textContent = '這個選項已經存在。';
+          return
+        }
+        data.custom.push(v);
+        inp.value = '';
+        save();
+        renderOptions();
+        inp.focus()
+      });
+      $('newOption').addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          $('add').click()
+        }
+      });
+      $('draw').addEventListener('click', draw);
+      $('clear').addEventListener('click', () => {
+        if (busy || !data.history.length) return;
+        if (confirm('確定清除所有抽選紀錄嗎？')) {
+          data.history = [];
+          save();
+          renderHistory()
+        }
+      });
+      renderOptions();
+      renderHistory();
+    })();
+</script>
+  </body>
+</html>
